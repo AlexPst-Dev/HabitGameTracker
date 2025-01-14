@@ -1,0 +1,64 @@
+{
+  "tasks": [
+    {
+      "name": "Go to the gym",
+      "xp": 10,
+      "category": "Main quests",
+      "completed": false
+    },
+    {
+      "name": "Code a project",
+      "xp": 15,
+      "category": "Main quests",
+      "completed": false
+    },
+    {
+      "name": "Read",
+      "xp": 8,
+      "category": "Main quests",
+      "completed": false
+    },
+    {
+      "name": "Play music",
+      "xp": 7,
+      "category": "Main quests",
+      "completed": false
+    },
+    {
+      "name": "Do a code exercise on leetcode",
+      "xp": 12,
+      "category": "Main quests",
+      "completed": false
+    },
+    {
+      "name": "Try a new recipe",
+      "xp": 5,
+      "category": "Sub-quests",
+      "completed": false
+    },
+    {
+      "name": "Go for a run",
+      "xp": 6,
+      "category": "Sub-quests",
+      "completed": false
+    },
+    {
+      "name": "Draw",
+      "xp": 4,
+      "category": "Sub-quests",
+      "completed": false
+    },
+    {
+      "name": "Paint",
+      "xp": 4,
+      "category": "Sub-quests",
+      "completed": false
+    },
+    {
+      "name": "Watch a documentary",
+      "xp": 3,
+      "category": "Sub-quests",
+      "completed": false
+    }
+  ]
+}

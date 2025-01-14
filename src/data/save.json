@@ -1,0 +1,15 @@
+{
+  "progress": {
+    "day": 1,
+    "date": "2025-01-07T12:00:00Z",
+    "level": 1,
+    "player": {
+      "playerName": "John Doe",
+      "playerXp": 0,
+      "dailyXp": 0
+    },
+    "completedTasksCount": 0,
+    "lastUpdate": "2025-01-07T12:05:00Z",
+    "version": "1.0"
+  }
+}
