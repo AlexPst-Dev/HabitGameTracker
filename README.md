@@ -1,14 +1,10 @@
-# dayly-habbit-app
+# Dayly Habit Game App
 
-This template should help get you started developing with Vue 3 in Vite.
+This app is a game which allows you to track your habit and motivate you to achieve them every days by earning experience points and level up like any rpg game !
 
-## Recommended IDE Setup
+## Informations
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
+This project is code using Vue.Js, see the documentation [here](https://vuejs.org/guide/quick-start.html)
 
 ## Project Setup
 
