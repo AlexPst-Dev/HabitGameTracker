@@ -36,7 +36,25 @@ const props = defineProps({
 });
 
 const totalExperience = ref(props.initialXp);
-const categorizedTasks = props.tasks.reduce((acc, task) => {
+const initializedTasks = ref([...props.tasks]);
+
+// Check localStorage for saved progress and initialize tasks
+const savedData = localStorage.getItem("saveData");
+if (savedData) {
+  const parsedData = JSON.parse(savedData);
+  const completedTasks = new Set(
+    parsedData.progress.completedTasks.map((task) => task.name)
+  );
+
+  initializedTasks.value.forEach((task) => {
+    if (completedTasks.has(task.name)) {
+      task.completed = true;
+      totalExperience.value += task.xp;
+    }
+  });
+}
+
+const categorizedTasks = initializedTasks.value.reduce((acc, task) => {
   if (!acc[task.category]) {
     acc[task.category] = [];
   }
@@ -50,15 +68,12 @@ const toggleTask = (task) => {
   } else {
     totalExperience.value -= task.xp;
   }
-  console.log(
-    `Task ${task.name} status:`,
-    task.completed,
-    `has a value of: ${task.xp}xp`
-  );
 };
 
 const saveProgress = () => {
-  const completedTasks = props.tasks.filter((task) => task.completed);
+  const completedTasks = initializedTasks.value.filter(
+    (task) => task.completed
+  );
 
   const saveData = {
     progress: {
