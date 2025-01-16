@@ -2,7 +2,6 @@
   <h1>Home</h1>
   <div>
     <p>Welcome, {{ playerName }}!</p>
-    <p>Level: {{ playerLevel }}</p>
   </div>
   <List :tasks="tasks" :initialXp="playerXp" />
 </template>
@@ -19,5 +18,4 @@ const tasks = tasksData.tasks.map((task) => {
 
 const playerName = saveData.progress.player.playerName;
 const playerXp = saveData.progress.player.playerXp;
-const playerLevel = saveData.progress.level;
 </script>

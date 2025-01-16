@@ -1,6 +1,9 @@
 <template>
   <div>
-    <div class="player-progression">{{ totalExperience }}xp</div>
+    <div class="player-progression">
+      Level: {{ currentLevel }} | {{ totalExperience }}xp /
+      {{ xpForNextLevel }}xp
+    </div>
     <div class="task-list">
       <div
         v-for="(tasksByCategory, category) in categorizedTasks"
@@ -13,10 +16,10 @@
               <input
                 type="checkbox"
                 v-model="task.completed"
-                @change="() => toggleTask(task)"
+                @change="() => handleTaskToggle(task)"
               />
               <span :class="{ 'completed-task': task.completed }">
-                {{ task.name }} ({{ task.xp + "xp" }})
+                {{ task.name }} ({{ task.xp }}xp)
               </span>
             </label>
           </li>
@@ -28,66 +31,79 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed, onMounted } from "vue";
 
+// Props passed from the parent
 const props = defineProps({
   tasks: Array,
   initialXp: Number,
+  initialLevel: Number,
 });
 
-const totalExperience = ref(props.initialXp);
-const initializedTasks = ref([...props.tasks]);
+// Reactive state for experience and level
+const totalExperience = ref(props.initialXp || 0);
+const currentLevel = ref(props.initialLevel || 1);
 
-// Check localStorage for saved progress and initialize tasks
-const savedData = localStorage.getItem("saveData");
-if (savedData) {
-  const parsedData = JSON.parse(savedData);
-  const completedTasks = new Set(
-    parsedData.progress.completedTasks.map((task) => task.name)
-  );
+// Categorized tasks (dynamic grouping by category)
+const categorizedTasks = ref({});
 
-  initializedTasks.value.forEach((task) => {
-    if (completedTasks.has(task.name)) {
-      task.completed = true;
-      totalExperience.value += task.xp;
-    }
-  });
-}
+// Categorize tasks on initialization
+const categorizeTasks = () => {
+  categorizedTasks.value = props.tasks.reduce((acc, task) => {
+    acc[task.category] = acc[task.category] || [];
+    acc[task.category].push(task);
+    return acc;
+  }, {});
+};
 
-const categorizedTasks = initializedTasks.value.reduce((acc, task) => {
-  if (!acc[task.category]) {
-    acc[task.category] = [];
-  }
-  acc[task.category].push(task);
-  return acc;
-}, {});
+// XP formula for next level
+const xpForNextLevel = computed(() =>
+  Math.floor(24 * Math.pow(currentLevel.value / 2 + 1, 2))
+);
 
-const toggleTask = (task) => {
-  if (task.completed) {
-    totalExperience.value += task.xp;
-  } else {
-    totalExperience.value -= task.xp;
+// Check for and handle level up
+const handleLevelUp = () => {
+  while (totalExperience.value >= xpForNextLevel.value) {
+    totalExperience.value -= xpForNextLevel.value; // Carry over remaining XP
+    currentLevel.value += 1;
+    console.log(`Congratulations! You reached Level ${currentLevel.value}`);
   }
 };
 
-const saveProgress = () => {
-  const completedTasks = initializedTasks.value.filter(
-    (task) => task.completed
-  );
+// Toggle task completion and update XP
+const handleTaskToggle = (task) => {
+  totalExperience.value += task.completed ? task.xp : -task.xp;
+  handleLevelUp();
+};
 
+// Save progress to localStorage
+const saveProgress = () => {
+  const completedTasks = props.tasks.filter((task) => task.completed);
   const saveData = {
     progress: {
-      player: {
-        playerXp: totalExperience.value,
-      },
-      completedTasks: completedTasks,
+      playerXp: totalExperience.value,
+      playerLevel: currentLevel.value,
+      completedTasks,
       lastUpdate: new Date().toISOString(),
     },
   };
-
   localStorage.setItem("saveData", JSON.stringify(saveData));
   console.log("Progress saved:", saveData);
 };
+
+// Load saved progress on mount
+onMounted(() => {
+  const savedData = JSON.parse(localStorage.getItem("saveData"));
+  if (savedData?.progress) {
+    totalExperience.value = savedData.progress.playerXp || 0;
+    currentLevel.value = savedData.progress.playerLevel || 1;
+    const savedTasks = new Set(
+      savedData.progress.completedTasks.map((task) => task.name)
+    );
+    props.tasks.forEach((task) => (task.completed = savedTasks.has(task.name)));
+  }
+  categorizeTasks();
+});
 </script>
 
 <style scoped>
