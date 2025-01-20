@@ -43,8 +43,6 @@ const props = defineProps({
 // Reactive state for experience and level
 const totalExperience = ref(props.initialXp || 0);
 const currentLevel = ref(props.initialLevel || 1);
-
-// Categorized tasks (dynamic grouping by category)
 const categorizedTasks = ref({});
 
 // Categorize tasks on initialization
@@ -61,16 +59,16 @@ const xpForNextLevel = computed(() =>
   Math.floor(24 * Math.pow(currentLevel.value / 2 + 1, 2))
 );
 
-// Check for and handle level up
+// Level-up logic
 const handleLevelUp = () => {
   while (totalExperience.value >= xpForNextLevel.value) {
-    totalExperience.value -= xpForNextLevel.value; // Carry over remaining XP
+    totalExperience.value -= xpForNextLevel.value;
     currentLevel.value += 1;
     console.log(`Congratulations! You reached Level ${currentLevel.value}`);
   }
 };
 
-// Toggle task completion and update XP
+// Toggle task completion
 const handleTaskToggle = (task) => {
   totalExperience.value += task.completed ? task.xp : -task.xp;
   handleLevelUp();
@@ -91,7 +89,22 @@ const saveProgress = () => {
   console.log("Progress saved:", saveData);
 };
 
-// Load saved progress on mount
+// Reset tasks daily while keeping player data
+const resetDailyTasks = () => {
+  const savedData = JSON.parse(localStorage.getItem("saveData"));
+  if (savedData?.progress) {
+    const lastUpdateDate = new Date(
+      savedData.progress.lastUpdate
+    ).toDateString();
+    const today = new Date().toDateString();
+    if (lastUpdateDate !== today) {
+      props.tasks.forEach((task) => (task.completed = false)); // Reset only task completion
+      console.log("Daily tasks reset!");
+    }
+  }
+};
+
+// Load saved progress on mount and reset if needed
 onMounted(() => {
   const savedData = JSON.parse(localStorage.getItem("saveData"));
   if (savedData?.progress) {
@@ -103,6 +116,7 @@ onMounted(() => {
     props.tasks.forEach((task) => (task.completed = savedTasks.has(task.name)));
   }
   categorizeTasks();
+  resetDailyTasks(); // Check and reset tasks on load
 });
 </script>
 
