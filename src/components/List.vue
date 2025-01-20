@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="daily-task-list-component">
     <div class="player-progression">
       Level: {{ currentLevel }} | {{ totalExperience }}xp /
       {{ xpForNextLevel }}xp
@@ -8,11 +8,12 @@
       <div
         v-for="(tasksByCategory, category) in categorizedTasks"
         :key="category"
+        class="task-category"
       >
-        <h2>{{ category }}</h2>
+        <h2 class="task-category-name">{{ category }}</h2>
         <ul>
           <li v-for="(task, index) in tasksByCategory" :key="index">
-            <label>
+            <label class="list-control">
               <input
                 type="checkbox"
                 v-model="task.completed"
@@ -26,7 +27,7 @@
         </ul>
       </div>
     </div>
-    <button @click="saveProgress">Save Progress</button>
+    <button class="ml-auto" @click="saveProgress">Save</button>
   </div>
 </template>
 
@@ -121,20 +122,42 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.task-list {
-  padding: 1rem;
-  background-color: #f9f9f9;
-  border: 1px solid #ddd;
-  border-radius: 5px;
+.daily-task-list-component {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
-ul {
+
+.daily-task-list-component .task-list {
+  padding: 0.5rem;
+  background-color: #525252;
+  box-shadow: 4px 4px 5px black;
+}
+.daily-task-list-component .task-list h2 {
+  font-family: "VT323", serif;
+  font-size: 2.25rem;
+  margin: 0;
+  width: fit-content;
+}
+.daily-task-list-component .task-list ul {
   list-style-type: none;
   padding: 0;
 }
-li {
+.daily-task-list-component .task-list ul li {
   margin-bottom: 0.5rem;
 }
-.completed-task {
+.daily-task-list-component .task-list ul li .list-control {
+  display: grid;
+  grid-template-columns: 1rem auto;
+  gap: 0.5em;
+}
+.daily-task-list-component .task-list ul li .list-control input {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.daily-task-list-component .task-list .completed-task {
   text-decoration: line-through;
   color: #888;
 }
