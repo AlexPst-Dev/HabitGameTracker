@@ -1,5 +1,24 @@
 <script setup>
 import { RouterLink, RouterView } from "vue-router";
+import { ref, onMounted } from "vue";
+import TaskCreationForm from "./components/TaskCreationForm.vue";
+
+const taskDataAvailable = ref(false); // Flag to determine if tasks are available
+const showTaskCreationForm = ref(false); // Controls popup visibility
+
+const handleSaveTaskList = () => {
+  showTaskCreationForm.value = false;
+  taskDataAvailable.value = true;
+};
+
+onMounted(() => {
+  const savedData = localStorage.getItem("taskData");
+  if (!savedData) {
+    showTaskCreationForm.value = true;
+  } else {
+    taskDataAvailable.value = true; // Data exists, show the game
+  }
+});
 </script>
 
 <template>
@@ -16,7 +35,14 @@ import { RouterLink, RouterView } from "vue-router";
     </div>
   </header>
 
-  <RouterView />
+  <div>
+    <div v-if="showTaskCreationForm">
+      <TaskCreationForm @saveTaskList="handleSaveTaskList" />
+    </div>
+    <div v-else>
+      <RouterView />
+    </div>
+  </div>
 </template>
 
 <style scoped>
