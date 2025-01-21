@@ -44,7 +44,3 @@ main button {
   font-family: "VT323", serif;
   cursor: pointer;
 }
-
-.ml-auto {
-  margin-left: auto;
-}
