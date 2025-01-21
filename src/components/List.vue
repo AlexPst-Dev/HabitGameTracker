@@ -36,12 +36,24 @@
         </ul>
       </div>
     </div>
-    <button class="ml-auto" @click="saveProgress">Save</button>
+    <div class="button-controls">
+      <button @click="toggleEditForm">
+        {{ showEditForm ? "Cancel" : "Edit Tasks" }}
+      </button>
+      <button @click="saveProgress">Save</button>
+    </div>
+
+    <TaskCreationForm
+      v-if="showEditForm"
+      :initialCategories="Object.entries(categorizedTasks)"
+      @saveTaskList="handleSaveTaskList"
+    />
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
+import TaskCreationForm from "./TaskCreationForm.vue";
 
 // Props passed from the parent
 const props = defineProps({
@@ -50,11 +62,24 @@ const props = defineProps({
   initialLevel: Number,
 });
 
+const showEditForm = ref(false);
+
 // Reactive state for experience and level
 const totalExperience = ref(props.initialXp || 0);
 const savedExperience = ref(props.initialXp || 0); // State for progress bar
 const currentLevel = ref(props.initialLevel || 1);
 const categorizedTasks = ref({});
+
+// Manage list edition
+const handleSaveTaskList = (taskData) => {
+  localStorage.setItem("taskData", JSON.stringify(taskData));
+  categorizeTasks(taskData.tasks);
+  showEditForm.value = false;
+};
+
+const toggleEditForm = () => {
+  showEditForm.value = !showEditForm.value;
+};
 
 // Categorize tasks on initialization
 const categorizeTasks = () => {
@@ -215,5 +240,10 @@ onMounted(() => {
   height: 100%;
   background: linear-gradient(to right, #1e90ff, #00ffff);
   transition: width 0.25s ease-in-out;
+}
+
+.button-controls {
+  display: flex;
+  justify-content: space-between;
 }
 </style>
