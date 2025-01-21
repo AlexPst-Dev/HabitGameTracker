@@ -1,8 +1,16 @@
 <template>
   <div class="daily-task-list-component">
     <div class="player-progression">
-      Level: {{ currentLevel }} | {{ totalExperience }}xp /
-      {{ xpForNextLevel }}xp
+      <div class="xp-bar">
+        <span>
+          Level: {{ currentLevel }} | {{ totalExperience }}xp /
+          {{ xpForNextLevel }}xp
+        </span>
+        <div
+          class="xp-bar-fill"
+          :style="{ width: progressBarWidth + '%' }"
+        ></div>
+      </div>
     </div>
     <div class="task-list">
       <div
@@ -44,6 +52,7 @@ const props = defineProps({
 
 // Reactive state for experience and level
 const totalExperience = ref(props.initialXp || 0);
+const savedExperience = ref(props.initialXp || 0); // State for progress bar
 const currentLevel = ref(props.initialLevel || 1);
 const categorizedTasks = ref({});
 
@@ -60,6 +69,11 @@ const categorizeTasks = () => {
 const xpForNextLevel = computed(() =>
   Math.floor(24 * Math.pow(currentLevel.value / 2 + 1, 2))
 );
+
+// Progress bar width based on XP
+const progressBarWidth = computed(() => {
+  return Math.min((savedExperience.value / xpForNextLevel.value) * 100, 100);
+});
 
 // Level-up logic
 const handleLevelUp = () => {
@@ -82,6 +96,7 @@ const handleTaskToggle = (task) => {
 
 // Save progress to localStorage
 const saveProgress = () => {
+  savedExperience.value = totalExperience.value; // Update progress bar XP on save
   props.tasks.forEach((task) => {
     if (task.completed) {
       task.saved = true; // Mark the task as saved
@@ -124,6 +139,7 @@ onMounted(() => {
   if (savedData?.progress) {
     totalExperience.value = savedData.progress.playerXp || 0;
     currentLevel.value = savedData.progress.playerLevel || 1;
+    savedExperience.value = savedData.progress.playerXp || 0; // Initialize bar with saved XP
     const savedTasks = new Set(
       savedData.progress.completedTasks.map((task) => task.name)
     );
@@ -176,5 +192,28 @@ onMounted(() => {
 .daily-task-list-component .task-list .completed-task {
   text-decoration: line-through;
   color: #888;
+}
+
+.player-progression {
+  margin-bottom: 1rem;
+}
+.xp-bar {
+  height: 1.5rem;
+  background-color: #ccc;
+  border-radius: 0.2rem;
+  overflow: hidden;
+  position: relative;
+}
+.xp-bar span {
+  color: black;
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 0 0.5rem;
+}
+.xp-bar-fill {
+  height: 100%;
+  background: linear-gradient(to right, #1e90ff, #00ffff);
+  transition: width 0.25s ease-in-out;
 }
 </style>
