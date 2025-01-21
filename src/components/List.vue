@@ -18,6 +18,7 @@
                 type="checkbox"
                 v-model="task.completed"
                 @change="() => handleTaskToggle(task)"
+                :disabled="task.saved"
               />
               <span :class="{ 'completed-task': task.completed }">
                 {{ task.name }} ({{ task.xp }}xp)
@@ -71,12 +72,22 @@ const handleLevelUp = () => {
 
 // Toggle task completion
 const handleTaskToggle = (task) => {
-  totalExperience.value += task.completed ? task.xp : -task.xp;
+  if (task.completed) {
+    totalExperience.value += task.xp;
+  } else {
+    totalExperience.value = Math.max(0, totalExperience.value - task.xp); // Prevent negative XP
+  }
   handleLevelUp();
 };
 
 // Save progress to localStorage
 const saveProgress = () => {
+  props.tasks.forEach((task) => {
+    if (task.completed) {
+      task.saved = true; // Mark the task as saved
+    }
+  });
+
   const completedTasks = props.tasks.filter((task) => task.completed);
   const saveData = {
     progress: {
@@ -88,6 +99,8 @@ const saveProgress = () => {
   };
   localStorage.setItem("saveData", JSON.stringify(saveData));
   console.log("Progress saved:", saveData);
+
+  categorizeTasks();
 };
 
 // Reset tasks daily while keeping player data
@@ -114,7 +127,10 @@ onMounted(() => {
     const savedTasks = new Set(
       savedData.progress.completedTasks.map((task) => task.name)
     );
-    props.tasks.forEach((task) => (task.completed = savedTasks.has(task.name)));
+    props.tasks.forEach((task) => {
+      task.completed = savedTasks.has(task.name);
+      task.saved = savedTasks.has(task.name); // Set the saved flag
+    });
   }
   categorizeTasks();
   resetDailyTasks(); // Check and reset tasks on load
