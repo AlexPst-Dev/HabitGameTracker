@@ -42,6 +42,7 @@ main button {
   width: fit-content;
   font-size: 1.5rem;
   font-family: "VT323", serif;
+  cursor: pointer;
 }
 
 .ml-auto {

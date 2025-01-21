@@ -42,6 +42,7 @@ header .wrapper nav a {
   color: white;
   text-decoration: unset;
   font-size: 0.75rem;
+  cursor: pointer;
 }
 header .wrapper nav a.active {
   background-color: white;
