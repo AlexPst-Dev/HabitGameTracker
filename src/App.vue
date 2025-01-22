@@ -3,12 +3,10 @@ import { RouterLink, RouterView } from "vue-router";
 import { ref, onMounted } from "vue";
 import TaskCreationForm from "./components/TaskCreationForm.vue";
 
-const taskDataAvailable = ref(false); // Flag to determine if tasks are available
 const showTaskCreationForm = ref(false); // Controls popup visibility
 
 const handleSaveTaskList = () => {
   showTaskCreationForm.value = false;
-  taskDataAvailable.value = true;
 };
 
 onMounted(() => {
@@ -16,7 +14,7 @@ onMounted(() => {
   if (!savedData) {
     showTaskCreationForm.value = true;
   } else {
-    taskDataAvailable.value = true; // Data exists, show the game
+    showTaskCreationForm.value = false;
   }
 });
 </script>

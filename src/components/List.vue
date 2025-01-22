@@ -71,9 +71,7 @@ const currentLevel = ref(props.initialLevel || 1);
 const categorizedTasks = ref({});
 
 // Manage list edition
-const handleSaveTaskList = (taskData) => {
-  localStorage.setItem("taskData", JSON.stringify(taskData));
-  categorizeTasks(taskData.tasks);
+const handleSaveTaskList = () => {
   showEditForm.value = false;
 };
 
