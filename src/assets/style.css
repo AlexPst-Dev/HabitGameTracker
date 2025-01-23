@@ -1,6 +1,5 @@
 html {
   height: 100%;
-  overflow: hidden;
 }
 body {
   background: rgb(11, 11, 11);
@@ -34,7 +33,7 @@ main h1 {
   font-size: 3rem;
 }
 
-main button {
+main .red-btn {
   border: none;
   padding: 0.2rem 0.75rem;
   background-color: #e00022;
@@ -43,4 +42,14 @@ main button {
   font-size: 1.5rem;
   font-family: "VT323", serif;
   cursor: pointer;
+}
+
+main .sub-btn {
+  font-family: "VT323", serif;
+  font-size: 1em;
+  background-color: transparent;
+  border-radius: 0;
+  border: 1px solid white;
+  color: white;
+  padding: 0.1rem 0.75rem;
 }

@@ -37,10 +37,8 @@
       </div>
     </div>
     <div class="button-controls">
-      <button @click="toggleEditForm">
-        {{ showEditForm ? "Cancel" : "Edit Tasks" }}
-      </button>
-      <button @click="saveProgress">Save</button>
+      <button @click="toggleEditForm" class="sub-btn">Edit</button>
+      <button class="red-btn" @click="saveProgress">Save</button>
     </div>
 
     <TaskCreationForm
